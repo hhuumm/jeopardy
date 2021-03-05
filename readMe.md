@@ -19,8 +19,8 @@ Since traditional Jeopardy runs 90 questions over 3 rounds for 3 contestants, id
 
 
 # Pseudo Code
-Variables
----
+    Variables
+    ---
     .Score
     .Name
     .Categories
@@ -31,16 +31,17 @@ Variables
         -Value
     .Timer
 
-Events
----
-Set onclicks for each box after the first 6 
+    Events
+    ---
+    for let i =6 i<boxes.length i++
+        boxes_i.onClick= prompt question/answer
     -First Six boxes will hold the Categories
     -Remaining 30 boxes 
         -Start a timer on-click, and prompt the question
             -No answer in the given time || Wrong question = no points
             -Correct answer will incremenet the score by the value
 
-formula for mapping clues to boxes is ::
+    formula for mapping clues to boxes is ::
                 clueIndex = boxIndex -6
 
 
