@@ -1,0 +1,31 @@
+
+body {
+    display:grid;
+    grid-template-rows:50% 40% 10%;
+    grid-template-columns:25% 50% 25%
+}
+
+.stage
+{
+
+    display:grid;
+    grid-template-rows: repeat(6, 1fr);
+    grid-template-columns: repeat(6, 1fr);
+    grid-column:2;
+    grid-row:2;
+    
+}
+
+
+div 
+{
+        column-gap:10px;
+        border: 3px solid black;
+        font-size: 8vmin;
+        text-align: center;
+        vertical-align: middle;
+        background-image:"images/tile.jpg"
+
+}  
+
+
