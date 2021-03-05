@@ -2,7 +2,8 @@
 This project is a modified single-player game of Jeopardy
 Clues and Categories provided by [Jservice](http://jservice.io/) 
 
-# [Wire Frame](https://i.imgur.com/BavgnVX.png)
+# Wire Frame
+![Alt text, photo didn't load](https://i.imgur.com/BavgnVX.png)
 
 # Screen-Shots
 [GameBoard](https://i.imgur.com/ynntx1x.png)
