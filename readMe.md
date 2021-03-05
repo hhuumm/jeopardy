@@ -45,8 +45,8 @@ Since traditional Jeopardy runs 90 questions over 3 rounds for 3 contestants, id
                 clueIndex = boxIndex -6
 
 
-Implementing the Daily Double:: 
-    -generate a random number between 0-30 and if the clue id matches that it's the daily double 
+    Implementing the Daily Double:: 
+        -generate a random number between 0-30 and if the clue id matches that it's the daily double 
         -daily double takes in a value, this value has to be minimum of 5 and max of 1000
             if the contestant loses this question their score is reduced by that value,stopping at 0
             else the contestant gets that money
