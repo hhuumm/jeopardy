@@ -5,6 +5,7 @@ body {
     grid-template-columns:25% 50% 25%
 }
 
+
 .stage
 {
 
@@ -24,8 +25,13 @@ div
         font-size: 8vmin;
         text-align: center;
         vertical-align: middle;
-        background-image:"images/tile.jpg"
+        background-image:"images/tile.jpg";
+        height:50px;
+        width:100px;
 
 }  
+div>#category{
+    font-size:smaller;
+}
 
 

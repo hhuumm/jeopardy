@@ -7,23 +7,20 @@ Clues and Categories provided by [Jservice](http://jservice.io/)
 
 # Screen-Shots
 [GameBoard](https://i.imgur.com/ynntx1x.png)
-
 [My Alex trebek](https://imgur.com/lDdVdhP)
-
 [Podium Template](https://i.imgur.com/AjIeGCC.png)
+
 # Fonts
 [gyparody](https://www.fonts.com/font/typodermic/gyparody?QueryFontType=Web&src=GoogleWebFonts)
+
 # How it plays
 Contestant clicks the tile, is prompted a question, once the 
 prompt is answered we check and see if our contestant gets the 
 money. If they get the money, their money increments, the box is 
 then set to blank. 
-
 Since traditional Jeopardy runs 90 questions over 3 rounds for 3 
 contestants, ideally each gets a shot at 30 questions, so we leave 
 the single player board to 30.
-
-
 # Pseudo Code
     Variables
     ---
