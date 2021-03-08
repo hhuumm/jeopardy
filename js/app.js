@@ -46,35 +46,18 @@ let counter =30;
 
 
 //Functions
-function addCategory(id){
 
- return fetch(`http://jservice.io/api/category?id=${id}}`)
-  .then(response=>{
-      ret = response.json()
-      
-    return ret
-  }).then(response1=>{
-    
-    cls= response1.clues
-    console.log("Outside")
-    console.log(ret)
-    console.log(response1)
-    console.log(cls)
-    console.log(counter)
-counter ++;
-  })
-
-
-}
 
 function getcategories(){
 
+  //Fetches the categories
   return fetch("http://jservice.io/api/categories?count=6")
   .then(response=>{
     return response.json()})
   .then(data =>{
     console.log(data)
     let p=0
+  //For each category get clues object and push to cls
     data.forEach((point)=>{
       boxes[p].innerHTML=point.title
        fetch("http://jservice.io/api/clues?category=" + point.id)
@@ -88,23 +71,16 @@ function getcategories(){
         p++
       
     })
-    //.catch((message)=>{
-    //   console.log("Broke :: " + message)
-    // })
-    
     
   })
   }
+
+//Initializes the game
 function init(){
   getcategories()
  }
 
- function setBoxes()
- {
 
- console.log()
-  
- }
 
   
   
@@ -113,7 +89,7 @@ function init(){
 //main script
 init()
 console.log(cls)
-console.log(cls[0])
+console.log("clues ^^^")
 
 // categories.forEach(cat=>{
 // console.log("in the categories")
