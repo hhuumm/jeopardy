@@ -1,8 +1,11 @@
 
 body {
     display:grid;
-    grid-template-rows:50% 40% 10%;
-    grid-template-columns:25% 50% 25%
+    grid-template-rows:10% 25% 25% 10%;
+    grid-template-columns:10% 26.5% 13.5% 13.5% 26.5% 10%;
+    margin:0;
+    min-height:100vh;
+
 }
 
 
@@ -12,8 +15,9 @@ body {
     display:grid;
     grid-template-rows: repeat(6, 1fr);
     grid-template-columns: repeat(6, 1fr);
-    grid-column:2;
-    grid-row:2;
+    grid-column:2/6;
+    grid-row:2/3;
+
     
 }
 
@@ -26,12 +30,12 @@ div
         text-align: center;
         vertical-align: middle;
         background-image:"images/tile.jpg";
-        height:50px;
-        width:100px;
+       
 
 }  
 div>#category{
     font-size:smaller;
+    
 }
 
 
