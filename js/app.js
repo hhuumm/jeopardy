@@ -2,13 +2,15 @@
 
 // Cached Element Reference
 let body = document.body
-body.style.height="100%"
-body.style.width="100%"
-body.style.backgroundColor="black"
 let title = document.createElement('p')
 let container = document.createElement('section');
 let scoreBoard = document.createElement('p')
 let podiumContainer=document.createElement('container')
+
+//Styling
+body.style.height="100%"
+body.style.width="100%"
+body.style.backgroundColor="black"
 podiumContainer.style.display="grid"
 podiumContainer.style.girdTemplateRows="25% 25% 50%"
 podiumContainer.style.gridRow="3"
@@ -27,15 +29,12 @@ title.style.gridRow="1"
 title.style.gridColumn="3/5"
 title.style.justifySelf="center"
 title.style.alignSelf="center"
+
+//Stores each individual square
 let boxes= [];
 
 
-//Event Handlers
-//set box attributes and Styling
 container.style.backgroundImage='../images/tile.png'
-// container.style.height='200px'
-// container.style.width='300px'
-
 container.style.justifySelf="left"
 container.style.alignSelf="center"
 
@@ -69,9 +68,9 @@ for(let i = 0; i < 36;i++)
     container.appendChild(box)
 
 }
+
 body.appendChild(title)
 body.appendChild(container)
-
 body.append(podiumContainer)
 
 
@@ -85,13 +84,78 @@ let counter = 0;
 //Calls
 getcategories()
 
+
 //Functions
+function prext(promptText,cb)
+{
+  let ret=null;
+  //Hiding the board 
+  container.style.display="none"
+
+  //Creating new elements for prompt
+  let question = document.createElement("p")
+  let button = document.createElement("button")
+  let input = document.createElement("input")
+  let timer = 30;
+  let state = false
+  
+  
+  //Styling
+  question.innerHTML=promptText
+  question.style.gridRow="2"
+  question.style.gridColumn="3/5"
+  question.style.textAlign="center"
+  question.style.color="yellow"
+  button.style.gridRow="3"
+  button.style.gridColumn="3/5"
+  button.style.textAlign="center"
+  button.innerHTML="Answer"
+  button.style.color="Black"
+  button.style.fontSize="big"
+  input.style.gridRow="2"
+
+  //ADding elements to body
+  
+  body.appendChild(question)
+  body.appendChild(input)
+  body.appendChild(button)
+  //New button event for prompting the question
+  button.addEventListener('click',()=>{
+    console.log(input.value)
+    
+    clear()
+   
+    cb(input.value)
+    
+  })
+
+  let time = setTimeout(()=>{
+    clear()
+    
+    return input.value || "no answer"
+  },30000)
+
+  
+  
+  
+  //Clears the prompt of the newly added 
+  function clear ()
+  {    
+    body.removeChild(button)
+    body.removeChild(question)
+    body.removeChild(input)
+    container.style.display="grid"
+    clearTimeout(time)
+  }
+
+}
 
 
 async function getcategories()
 {score = 0
   body.appendChild(container)
 
+title.innerHTML="<strong>Jeopardy!</strong>"
 body.append(podiumContainer)
 scoreBoard.innerHTML=score
 console.log("This is the random number::"+rand)
@@ -130,8 +194,19 @@ console.log("This is the random number::"+rand)
           }
            }
           
+           //used to be let answer = prompt (clue.title.toUpperCase()+"\n"+cl.question)
+           let answer="here"
+           prext(clue.title.toUpperCase()+"\n"+cl.question,(ans)=>{
+            console.log(answer)  
+            answer =ans
+
+
+           })
            
-           let answer=prompt(clue.title.toUpperCase()+"\n"+cl.question + "\n\n\n What is ______?")
+          
+           
+           console.log(answer)
+         
            
             
             
@@ -177,7 +252,7 @@ console.log("This is the random number::"+rand)
         if(counter==30)
         {
           body.removeChild(container)
-      body.removeChild(podiumContainer)
+      
       title.innerHTML="<strong>GAME OVER</strong>"
       let restart = document.createElement("button")
       restart.innerHTML="Restart"
@@ -196,6 +271,17 @@ console.log("This is the random number::"+rand)
        
       },{once:true})
     }
+
+
+
+
+
+
+
+
+
+
+
     if(boxes[i+12].innerHTML<100&&(cl.value==400 || (cl.value==200 && parseInt(cl.airdate.split('-')[0])<=2001 )))
     {
       
@@ -255,7 +341,6 @@ console.log("This is the random number::"+rand)
         if(counter==30)
         {
           body.removeChild(container)
-      body.removeChild(podiumContainer)
       title.innerHTML="<strong>GAME OVER</strong>"
       let restart = document.createElement("button")
       restart.innerHTML="Restart"
@@ -274,6 +359,25 @@ console.log("This is the random number::"+rand)
 
     },{once:true})
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     if(boxes[i+18].innerHTML<100&&(cl.value==600 || (cl.value==300 && parseInt(cl.airdate.split('-')[0])<=2001 )))
     {
     boxes[i+18].innerHTML=600
@@ -326,7 +430,6 @@ console.log("This is the random number::"+rand)
       counter++
       if(counter==30)
       { body.removeChild(container)
-        body.removeChild(podiumContainer)
         title.innerHTML="<strong>GAME OVER</strong>"
         let restart = document.createElement("button")
         restart.innerHTML="Restart"
@@ -344,6 +447,26 @@ console.log("This is the random number::"+rand)
 
     },{once:true})
     } 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     if(boxes[i+24].innerHTML<100&&(cl.value==800 || (cl.value==400 && parseInt(cl.airdate.split('-')[0])<=2001 )))
     {
     boxes[i+24].innerHTML=800
@@ -391,7 +514,6 @@ console.log("This is the random number::"+rand)
         counter++
         if(counter==30)
         { body.removeChild(container)
-          body.removeChild(podiumContainer)
           title.innerHTML="<strong>GAME OVER</strong>"
           let restart = document.createElement("button")
           restart.innerHTML="Restart"
@@ -409,6 +531,34 @@ console.log("This is the random number::"+rand)
     },{once:true})
     }
     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     if(boxes[i+30].innerHTML<100&&(cl.value==1000 || (cl.value==500 && parseInt(cl.airdate.split('-')[0])<=2001 )))
     {
     boxes[i+30].innerHTML=1000
@@ -459,7 +609,6 @@ console.log("This is the random number::"+rand)
     counter++
     if(counter==30)
     { body.removeChild(container)
-      body.removeChild(podiumContainer)
       title.innerHTML="<strong>GAME OVER</strong>"
       let restart = document.createElement("button")
       restart.innerHTML="Restart"
@@ -488,4 +637,7 @@ console.log("This is the random number::"+rand)
   
   } 
 }
+
+
+
 
