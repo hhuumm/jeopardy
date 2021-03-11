@@ -82,6 +82,7 @@ let counter = 0;
 
 
 //Calls
+intro()
 getcategories()
 
 
@@ -91,6 +92,7 @@ function prext(promptText,cb)
   let ret=null;
   //Hiding the board 
   container.style.display="none"
+  title.style.display="none"
 
   //Creating new elements for prompt
   let question = document.createElement("p")
@@ -102,18 +104,24 @@ function prext(promptText,cb)
   
   //Styling
   question.innerHTML=promptText
-  question.style.gridRow="2"
+  question.style.gridRow="1"
   question.style.gridColumn="3/5"
   question.style.textAlign="center"
   question.style.color="yellow"
-  button.style.gridRow="3"
+  button.style.gridRow="4"
   button.style.gridColumn="3/5"
+  button.height="50px"
+  button.width="100px"
   button.style.textAlign="center"
   button.innerHTML="Answer"
   button.style.color="Black"
   button.style.fontSize="big"
   input.style.gridRow="2"
-
+  input.style.gridColumn="3/5"
+  input.value="Answer Here"
+  input.style.textAlign="center"
+  input.addEventListener("focus",()=>{input.value=""})
+  document.body.height=50%
   //ADding elements to body
   
   body.appendChild(question)
@@ -132,7 +140,7 @@ function prext(promptText,cb)
   let time = setTimeout(()=>{
     clear()
     
-    return input.value || "no answer"
+    cb(input.value)
   },30000)
 
   
@@ -144,6 +152,7 @@ function prext(promptText,cb)
     body.removeChild(button)
     body.removeChild(question)
     body.removeChild(input)
+    title.style.display="flex" 
     container.style.display="grid"
     clearTimeout(time)
   }
@@ -195,77 +204,80 @@ console.log("This is the random number::"+rand)
            }
           
            //used to be let answer = prompt (clue.title.toUpperCase()+"\n"+cl.question)
-           let answer="here"
-           prext(clue.title.toUpperCase()+"\n"+cl.question,(ans)=>{
-            console.log(answer)  
+           let answer
+           (
+           prext(clue.title.toUpperCase()+"\n<br>"+cl.question,(ans)=>{
+              
             answer =ans
-
-
-           })
-           
-          
-           
+              
            console.log(answer)
          
            
             
             
-          let check = cl.answer.toLowerCase()
-        
-          if(answer==null||timer==-1)
-          {
-            if(dailyDouble==null){}
-            else
-            {
-              if(dailyDouble!=null)
-              {score-=dailyDouble}
+           let check = cl.answer.toLowerCase()
+         
+           if(answer==null||timer==-1)
+           {
+             if(dailyDouble==null){}
+             else
+             {
+               if(dailyDouble!=null)
+               {score-=dailyDouble}
+               if(score<0)
+               {
+                 score =0
+               }
+ 
+             }
+           }
+           else
+           {
+             answer = answer.toLowerCase()
+             if(answer==check)
+             {
+               
+                score += (dailyDouble==null)?200:dailyDouble
+               
+             }
+             else
+             {
+               if(dailyDouble!=null)
+               {score-=dailyDouble}
               if(score<0)
-              {
+               {
                 score =0
-              }
+               }
+ 
+             }
+           }
+           scoreBoard.innerHTML="$"+score
+           box.innerHTML=""
+         counter++
+         if(counter==30)
+         {
+           body.removeChild(container)
+       
+       title.innerHTML="<strong>GAME OVER</strong>"
+       let restart = document.createElement("button")
+       restart.innerHTML="Restart"
+       restart.style.gridRow="2"
+       restart.style.gridColumn="3/5"
+       restart.addEventListener('click',()=>{
+ 
+         getcategories()
+         
+         body.removeChild(restart)
+       })
+       body.appendChild(restart)
+         }
 
-            }
-          }
-          else
-          {
-            answer = answer.toLowerCase()
-            if(answer==check)
-            {
-              
-          score += (dailyDouble==null)?200:dailyDouble
-              
-            }
-            else
-            {
-              if(dailyDouble!=null)
-              {score-=dailyDouble}
-             if(score<0)
-              {
-               score =0
-              }
 
-            }
-          }
-          scoreBoard.innerHTML="$"+score
-        box.innerHTML=""
-        counter++
-        if(counter==30)
-        {
-          body.removeChild(container)
-      
-      title.innerHTML="<strong>GAME OVER</strong>"
-      let restart = document.createElement("button")
-      restart.innerHTML="Restart"
-      restart.style.gridRow="2"
-      restart.style.gridColumn="3/5"
-      restart.addEventListener('click',()=>{
-
-        getcategories()
-        
-        body.removeChild(restart)
-      })
-      body.appendChild(restart)
-        }
+           })
+           )
+           
+          
+         
 
         
        
@@ -302,59 +314,77 @@ console.log("This is the random number::"+rand)
         let check = cl.answer.toLowerCase()
 
      
-        let answer=prompt(""+clue.title.toUpperCase()+"\n"+cl.question + "\n\n What is ______?")
-        if(answer==null||timer==-1){
-          if(dailyDouble==null){}
-            else
-            {
-              score-=dailyDouble
-              if(score<0)
-              {
-                score =0
-              }
-
-            }
-          }
-        else{
-        answer = answer.toLowerCase()
+       let answer
+        (
+        prext(clue.title.toUpperCase()+"\n"+cl.question,(ans)=>{
+           
+         answer =ans
+           
+        console.log(answer)
+      
         
-        if(answer==check)
+         
+         
+        let check = cl.answer.toLowerCase()
+      
+        if(answer==null||timer==-1)
         {
-          score += (dailyDouble==null)?400:dailyDouble
+          if(dailyDouble==null){}
+          else
+          {
+            if(dailyDouble!=null)
+            {score-=dailyDouble}
+            if(score<0)
+            {
+              score =0
+            }
+
+          }
         }
         else
         {
-          if(dailyDouble!=null)
-          {score-=dailyDouble}
-          if(score<0)
+          answer = answer.toLowerCase()
+          if(answer==check)
           {
-            score =0
+            
+        score += (dailyDouble==null)?200:dailyDouble
+            
           }
-    
-        }
-      
-    }
-        box.innerHTML=""
+          else
+          {
+            if(dailyDouble!=null)
+            {score-=dailyDouble}
+           if(score<0)
+            {
+             score =0
+            }
 
+          }
+        }
         scoreBoard.innerHTML="$"+score
-        counter++
-        if(counter==30)
-        {
-          body.removeChild(container)
-      title.innerHTML="<strong>GAME OVER</strong>"
-      let restart = document.createElement("button")
-      restart.innerHTML="Restart"
-      restart.style.gridRow="2"
-      restart.style.gridColumn="3/5"
-      restart.addEventListener('click',()=>{
+        box.innerHTML=""
+      counter++
+      if(counter==30)
+      {
+        body.removeChild(container)
+    
+    title.innerHTML="<strong>GAME OVER</strong>"
+    let restart = document.createElement("button")
+    restart.innerHTML="Restart"
+    restart.style.gridRow="2"
+    restart.style.gridColumn="3/5"
+    restart.addEventListener('click',()=>{
 
-        getcategories()
-        
-        body.removeChild(restart)
-      })
-      body.appendChild(restart)
-          
-        }
+      getcategories()
+      
+      body.removeChild(restart)
+    })
+    body.appendChild(restart)
+      }
+
+
+        })
+        )
 
 
     },{once:true})
@@ -397,53 +427,77 @@ console.log("This is the random number::"+rand)
       let timer = 30
       let check = cl.answer.toLowerCase()
 
-        let answer=prompt(""+clue.title.toUpperCase()+"\n"+cl.question + "\n\n\n What is ______?")
-        if(answer==null||timer==-1){
-          
-          if(dailyDouble==null){
-
-          }
+      let answer
+      (
+      prext(clue.title.toUpperCase()+"\n<br>"+cl.question,(ans)=>{
+         
+       answer =ans
+         
+      console.log(answer)
+    
       
-          }
+       
+       
+      let check = cl.answer.toLowerCase()
+    
+      if(answer==null||timer==-1)
+      {
+        if(dailyDouble==null){}
         else
         {
-          answer = answer.toLowerCase()
-          if(answer==check)
+          if(dailyDouble!=null)
+          {score-=dailyDouble}
+          if(score<0)
           {
-            score += (dailyDouble==null)?600:dailyDouble
+            score =0
           }
-          else
-          {
-            if(dailyDouble!=null)
-            {score-=dailyDouble}
-              if(score<0)
-              {
-                score =0
-              }
-      
-          }
-      }
-    
-      box.innerHTML=""
 
-      scoreBoard.innerHTML="$"+score
-      counter++
-      if(counter==30)
-      { body.removeChild(container)
-        title.innerHTML="<strong>GAME OVER</strong>"
-        let restart = document.createElement("button")
-        restart.innerHTML="Restart"
-        restart.style.gridRow="2"
-        restart.style.gridColumn="3/5"
-        restart.addEventListener('click',()=>{
-  
-          getcategories()
+        }
+      }
+      else
+      {
+        answer = answer.toLowerCase()
+        if(answer==check)
+        {
           
-          body.removeChild(restart)
-        })
-        body.appendChild(restart)
-      }
+      score += (dailyDouble==null)?200:dailyDouble
+          
+        }
+        else
+        {
+          if(dailyDouble!=null)
+          {score-=dailyDouble}
+         if(score<0)
+          {
+           score =0
+          }
 
+        }
+      }
+      scoreBoard.innerHTML="$"+score
+      box.innerHTML=""
+    counter++
+    if(counter==30)
+    {
+      body.removeChild(container)
+  
+  title.innerHTML="<strong>GAME OVER</strong>"
+  let restart = document.createElement("button")
+  restart.innerHTML="Restart"
+  restart.style.gridRow="2"
+  restart.style.gridColumn="3/5"
+  restart.addEventListener('click',()=>{
+
+    getcategories()
+    
+    body.removeChild(restart)
+  })
+  body.appendChild(restart)
+    }
+
+
+      })
+      )
 
     },{once:true})
     } 
@@ -485,17 +539,22 @@ console.log("This is the random number::"+rand)
          }  
       let check = cl.answer.toLowerCase()
 
-        let answer=prompt(""+clue.title.toUpperCase()+"\n"+cl.question + "\n\n\n What is ______?")
-        if(answer==null||timer==-1){
-          if(dailyDouble==null){}
-      }
-        else
-        {
-        answer = answer.toLowerCase()
-        if(answer==check)
-        {
-          score += (dailyDouble==null)?800:dailyDouble
-        }
+      let answer
+      (
+      prext(clue.title.toUpperCase()+"\n<br>"+cl.question,(ans)=>{
+         
+       answer =ans
+         
+      console.log(answer)
+    
+      
+       
+       
+      let check = cl.answer.toLowerCase()
+    
+      if(answer==null||timer==-1)
+      {
+        if(dailyDouble==null){}
         else
         {
           if(dailyDouble!=null)
@@ -504,29 +563,53 @@ console.log("This is the random number::"+rand)
           {
             score =0
           }
-    
+
         }
       }
-    
-        box.innerHTML=""
-
-        scoreBoard.innerHTML="$"+score
-        counter++
-        if(counter==30)
-        { body.removeChild(container)
-          title.innerHTML="<strong>GAME OVER</strong>"
-          let restart = document.createElement("button")
-          restart.innerHTML="Restart"
-          restart.style.gridRow="2"
-          restart.style.gridColumn="3/5"
-          restart.addEventListener('click',()=>{
-    
-            getcategories()
-            
-            body.removeChild(restart)
-          })
-          body.appendChild(restart)
+      else
+      {
+        answer = answer.toLowerCase()
+        if(answer==check)
+        {
+          
+      score += (dailyDouble==null)?200:dailyDouble
+          
         }
+        else
+        {
+          if(dailyDouble!=null)
+          {score-=dailyDouble}
+         if(score<0)
+          {
+           score =0
+          }
+
+        }
+      }
+      scoreBoard.innerHTML="$"+score
+      box.innerHTML=""
+    counter++
+    if(counter==30)
+    {
+      body.removeChild(container)
+  
+  title.innerHTML="<strong>GAME OVER</strong>"
+  let restart = document.createElement("button")
+  restart.innerHTML="Restart"
+  restart.style.gridRow="2"
+  restart.style.gridColumn="3/5"
+  restart.addEventListener('click',()=>{
+
+    getcategories()
+    
+    body.removeChild(restart)
+  })
+  body.appendChild(restart)
+    }
+
+
+      })
+      )
 
     },{once:true})
     }
@@ -579,49 +662,77 @@ console.log("This is the random number::"+rand)
 
 
 
-    let answer=prompt(clue.title.toUpperCase()+"\n"+cl.question + "\n\n\n What is ______?")
-          
-    if(answer==null||timer==-1){
+    let answer
+    (
+    prext(clue.title.toUpperCase()+"\n<br>"+cl.question,(ans)=>{
+       
+     answer =ans
+       
+    console.log(answer)
+  
+    
+     
+     
+    let check = cl.answer.toLowerCase()
+  
+    if(answer==null||timer==-1)
+    {
       if(dailyDouble==null){}
-     }
-        else
-        {
-    answer = answer.toLowerCase()
-    if(answer==check)
-    {
-          score += (dailyDouble==null)?1000:dailyDouble
-    }   else
-    {
-      if(dailyDouble!=null)
-      {score-=dailyDouble}
-      if(score<0)
+      else
       {
-        score =0
-      }
-
-    }
+        if(dailyDouble!=null)
+        {score-=dailyDouble}
+        if(score<0)
+        {
+          score =0
         }
-      
 
-    box.innerHTML=""
-
-    scoreBoard.innerHTML="$"+score
-    counter++
-    if(counter==30)
-    { body.removeChild(container)
-      title.innerHTML="<strong>GAME OVER</strong>"
-      let restart = document.createElement("button")
-      restart.innerHTML="Restart"
-      restart.style.gridRow="2"
-      restart.style.gridColumn="3/5"
-      restart.addEventListener('click',()=>{
-
-        getcategories()
-        
-        body.removeChild(restart)
-      })
-      body.appendChild(restart)
+      }
     }
+    else
+    {
+      answer = answer.toLowerCase()
+      if(answer==check)
+      {
+        
+    score += (dailyDouble==null)?200:dailyDouble
+        
+      }
+      else
+      {
+        if(dailyDouble!=null)
+        {score-=dailyDouble}
+       if(score<0)
+        {
+         score =0
+        }
+
+      }
+    }
+    scoreBoard.innerHTML="$"+score
+    box.innerHTML=""
+  counter++
+  if(counter==30)
+  {
+    body.removeChild(container)
+
+title.innerHTML="<strong>GAME OVER</strong>"
+let restart = document.createElement("button")
+restart.innerHTML="Restart"
+restart.style.gridRow="2"
+restart.style.gridColumn="3/5"
+restart.addEventListener('click',()=>{
+
+  getcategories()
+  
+  body.removeChild(restart)
+})
+body.appendChild(restart)
+  }
+
+
+    })
+    )
 
     
 
@@ -636,6 +747,34 @@ console.log("This is the random number::"+rand)
 
   
   } 
+}
+
+
+function intro(){
+
+title.style.display="none"
+podiumContainer.style.display="none"
+scoreBoard.style.display="none"
+container.style.display="none"
+body.style.backgroundImage= "url(images/title.png)"
+body.style.backgroundPosition="center"
+body.style.backgroundRepeat="no-repeat"
+let intro = new Audio("url(sounds/theme.mp3)")
+body.addEventListener('click',()=>{
+
+  title.style.display="flex"
+  podiumContainer.style.display="grid"
+  scoreBoard.style.display="grid"
+  container.style.display="grid"
+  body.style.backgroundImage=""
+
+
+},{once:true})
+
+
+
+
+
 }
 
 
