@@ -113,9 +113,12 @@ function prext(promptText,cb)
   button.height="50px"
   button.width="100px"
   button.style.textAlign="center"
-  button.innerHTML="Answer"
+  button.innerHTML="Submit"
   button.style.color="Black"
   button.style.fontSize="big"
+  input.style.height="50%"
+  scoreBoard.style.gridRow="1/2"
+  
   input.style.gridRow="2"
   input.style.gridColumn="3/5"
   input.value="Answer Here"

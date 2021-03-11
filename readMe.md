@@ -6,12 +6,12 @@ Clues and Categories provided by [Jservice](http://jservice.io/)
 ![Alt text, photo didn't load](https://i.imgur.com/BavgnVX.png)
 
 # Screen-Shots
-[GameBoard](https://i.imgur.com/ynntx1x.png)
-[My Alex trebek](https://imgur.com/lDdVdhP)
-[Podium Template](https://i.imgur.com/AjIeGCC.png)
+[Cover](https://imgur.com/C59aVKo)
+[Board](https://i.imgur.com/TfwlU0Y.png)
+[Custom Prompt](https://i.imgur.com/uIziwcf.png)
 
-# Fonts
-[gyparody](https://www.fonts.com/font/typodermic/gyparody?QueryFontType=Web&src=GoogleWebFonts)
+# Link 
+[Jeopardy!](https://j3op4rdy.surge.sh)
 
 # How it plays
 Contestant clicks the tile, is prompted a question, once the 
@@ -76,4 +76,10 @@ the single player board to 30.
                  of 5$
 
 
+
+# Future Implementation
+
+Getting the api calls to call other categories
+Adding sounds::thinking song, buzzer, intro,
+Styling the css of the prompt to match more of a full screen effect
 
