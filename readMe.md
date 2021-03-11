@@ -6,7 +6,7 @@ Clues and Categories provided by [Jservice](http://jservice.io/)
 ![Alt text, photo didn't load](https://i.imgur.com/BavgnVX.png)
 
 # Screen-Shots
-![Alt text,Cover](https://imgur.com/C59aVKo)
+![Alt text,Cover](https://i.imgur.com/Bs6G6YE.png)
 ![Alt text,Board](https://i.imgur.com/TfwlU0Y.png)
 ![Alt text,Custom Prompt](https://i.imgur.com/uIziwcf.png)
 
