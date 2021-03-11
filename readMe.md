@@ -6,9 +6,9 @@ Clues and Categories provided by [Jservice](http://jservice.io/)
 ![Alt text, photo didn't load](https://i.imgur.com/BavgnVX.png)
 
 # Screen-Shots
-[Cover](https://imgur.com/C59aVKo)
-[Board](https://i.imgur.com/TfwlU0Y.png)
-[Custom Prompt](https://i.imgur.com/uIziwcf.png)
+[Alt text,Cover](https://imgur.com/C59aVKo)
+[Alt text,Board](https://i.imgur.com/TfwlU0Y.png)
+[Alt text,Custom Prompt](https://i.imgur.com/uIziwcf.png)
 
 # Link 
 [Jeopardy!](https://j3op4rdy.surge.sh)
