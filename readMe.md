@@ -14,13 +14,14 @@ Clues and Categories provided by [Jservice](http://jservice.io/)
 [Jeopardy!](https://j3op4rdy.surge.sh)
 
 # How it plays
-Contestant clicks the tile, is prompted a question, once the 
+Any click in the title screen prompts the gamae.
+Contestant clicks any tile, and is prompted a question, once the 
 prompt is answered we check and see if our contestant gets the 
 money. If they get the money, their money increments, the box is 
 then set to blank. 
-Since traditional Jeopardy runs 90 questions over 3 rounds for 3 
-contestants, ideally each gets a shot at 30 questions, so we leave 
-the single player board to 30.
+Daily double decrements the total amount by the wager.
+This repeats 30 times unitl the board is cleared
+
 # Pseudo Code
     Variables
     ---
@@ -79,7 +80,9 @@ the single player board to 30.
 
 # Future Implementation
 
-Getting the api calls to call other categories
-Adding sounds::thinking song, buzzer, intro,
-Styling the css of the prompt to match more of a full screen effect
+*Getting the api calls to call other categories
+
+*Adding sounds::thinking song, buzzer, intro,
+
+*Styling the css of the prompt to match more of a full screen effect
 
