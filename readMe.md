@@ -1,5 +1,6 @@
 # Jeopardy!
 This project is a modified single-player game of Jeopardy
+
 Clues and Categories provided by [Jservice](http://jservice.io/) 
 
 # Wire Frame
