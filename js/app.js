@@ -8,9 +8,7 @@ let scoreBoard = document.createElement('p')
 let podiumContainer=document.createElement('container')
 
 //Styling
-body.style.height="100%"
-body.style.width="100%"
-body.style.backgroundColor="black"
+
 podiumContainer.style.display="grid"
 podiumContainer.style.girdTemplateRows="25% 25% 50%"
 podiumContainer.style.gridRow="3"
