@@ -7,9 +7,11 @@ categories = getData();
             let filteredcat = [];
             let boxes=[];
           
-            //Grab six categories with all the correct cost values
+            //Grab six categories with all the correct cost values and place into filteredcat[]
            for (let i = 0; i < 6; i++) 
             {
+                //Checking that each category has questions with 
+                //costs from 200-1000 in increments of 200
                 let numb = getRandomInt(data.length);
                 await fetch(`http://jservice.io/api/category?id=${data.splice(numb, 1)[0].id}`)
                 .then(req=>req.json())
@@ -25,13 +27,10 @@ categories = getData();
                         }
                     })
             }
-           
-            //Filtered Cat populated with 6 random categories
-            //Weve checked that each category has questions with 
-            //costs from 200-1000 in increments of 200
 
             //Grab the main stage
             let container = document.getElementsByClassName("stage")[0];
+            
             //Create the Cells for Jeopardy
             for (let i = 0; i < 36; i++) {
                 let box = document.createElement("div");
@@ -47,9 +46,28 @@ categories = getData();
                 boxes.push(box);
                 container.appendChild(box);
               }
-            
-        
-        })
+
+            //Populate Cells with Category and Clue Data
+            filteredcat.map((category,index)=>{
+                boxes[index].innerHTML=category.title.toUpperCase()
+                let incr=index+6;
+                //Since we know that we have all the values in the category, we for loop for each value and get the clue
+                for(let cost = 200;cost<1001;cost+=200)
+                {
+                    let gclue = getClue(cost,category.clues)
+                    boxes[incr].innerHTML=gclue.value
+                    boxes[incr].addEventListener("click",()=>{
+                        prompt(gclue)
+                    })
+                   
+                    // Set the on click prompt for the cell.
+
+                    incr+=6;
+                
+                }
+
+            })
+            })
                         
                         
        
@@ -63,6 +81,12 @@ categories = getData();
 
 
 //Functions
+function getClue(cost, clues)
+{
+     return clues.filter((clue)=>{
+        return clue.value==cost
+    })[0]
+}
 async function getData()
 {
     return await fetch("http://jservice.io/api/categories?count=100")
@@ -95,4 +119,27 @@ function isCorrect(category)
         return false;
     }
    
+}
+function prompt(clue)
+{
+    console.clear();
+    //Take the body and Store it in a temp variable
+    console.log(clue)
+    let question=document.getElementsByTagName('body')[0];
+    let log = question.innerHTML;
+    question.innerHTML=
+    `
+    <div class='container'>
+        <div class='box' id='question'>
+            <h2>${clue.question}</h2>
+        </div>
+        <textarea id='answer'></textarea>
+    </div>
+    
+    `
+
+    //Create new HTML for prompt and set it to the body
+            //New Promp contains the question, a place to type the answer, a timer, and a submit button
+
+    //Set the onclick of the box 
 }
