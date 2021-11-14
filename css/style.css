@@ -8,10 +8,12 @@ body {
 
 }
 .timer
-{   display:initial;
-    position:absolute;
-    top:left;
-    margin-top:10px;
+{  text-align: center;
+}
+
+#score
+{
+    text-align: center;
 }
 .box
 {

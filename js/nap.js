@@ -84,12 +84,7 @@ categories = getData();
 
 
 //Functions
-// function boxclick(e)
-// {
-//     prompt(gclue);
-//     e.target.innerHTML="";
-//     e.target.removeEventListener('click',this);
-// }
+
 function getClue(cost, clues)
 {
      return clues.filter((clue)=>{
@@ -132,16 +127,16 @@ function isCorrect(category)
 
 function prompt(clue)
 {
+    
     console.clear();
     //Take the body and Store it in a temp variable
     console.log(clue)
-    
-    let question=document.getElementsByTagName('body')[0];
+    let scoreboard=document.getElementById('score')
+    let score = parseInt(scoreboard.innerText.substring(1));
+    let body=document.getElementsByTagName('body')[0];
     let game = document.getElementsByClassName('game')[0];
-    game.style.visibility='hidden';
-    
+    game.style.display='none';
     let counter= 0;
-    let log = question.innerHTML;
     let container=document.createElement('div')
         container.className='container'
     let box = document.createElement('div')
@@ -149,45 +144,60 @@ function prompt(clue)
         box.className='box';
     let timer = document.createElement('h1')
         timer.className='timer'
+        timer.innerText=0;
         
     let prompt =document.createElement('h2')
         prompt.innerText=clue.question
         box.appendChild(prompt)
     let answer=document.createElement('textarea');
+     //Set Up The Timer
+     let time=setInterval(()=>
+     {
+         if(counter==30)
+         {
+             body.removeChild(container);
+             body.removeChild(timer);
+             clearInterval(time);
+             game.style.display='block';
+             
+         }
+         counter++;
+         timer.innerText=counter;
+     },1000)
         answer.addEventListener('keypress',(e)=>{
-            if (e.key === 'Enter') {
-                question.removeChild(container)
-                game.style.visibility='visible'
-              }
+            if (e.key === 'Enter') 
+            {
+                body.removeChild(container);
+                body.removeChild(timer);
+
+                game.style.display='block';
+                clearInterval(time);
+                if((answer.value.toLowerCase()==`${clue.answer.replace( /(<([^>]+)>)/ig, '').toLowerCase()}`))
+                {
+                   score +=clue.value;
+                }
+                else
+                {
+                    score-=clue.value;
+                    score=score<0?0:score
+                }
+                scoreboard.innerText="$"+score
+            }
         })
-        answer.id='answer'
+        answer.id='answer';
+        
         // container.appendChild(timer)
-        container.append(timer)
+        body.append(timer)
         container.appendChild(box);
         container.appendChild(answer);
-        question.appendChild(container);
+        body.appendChild(container);
+        answer.focus();
+       
         
-        //Set Up The Timer
-        setInterval(()=>
-        {
-            if(counter==30)
-            {
-                question.removeChild(container)
-                clearInterval(this)
-                game.style.visibility='visible';
-            }
-            counter++;
-            timer.innerText=counter;
-        },1000)
+
         
-        if(answer.innerText==clue.answer)
-        {
-            return true;
-        }
-        else{
-            
-            return false;
-        }
+        
+        
         
 
     //Create new HTML for prompt and set it to the body
