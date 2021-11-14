@@ -56,8 +56,11 @@ categories = getData();
                 {
                     let gclue = getClue(cost,category.clues)
                     boxes[incr].innerHTML=gclue.value
-                    boxes[incr].addEventListener("click",()=>{
-                        prompt(gclue)
+                    boxes[incr].addEventListener("click",function clicked(e){
+                        prompt(gclue);
+                        e.target.innerHTML="";
+                        e.target.removeEventListener('click',clicked)
+                        
                     })
                    
                     // Set the on click prompt for the cell.
@@ -81,6 +84,12 @@ categories = getData();
 
 
 //Functions
+// function boxclick(e)
+// {
+//     prompt(gclue);
+//     e.target.innerHTML="";
+//     e.target.removeEventListener('click',this);
+// }
 function getClue(cost, clues)
 {
      return clues.filter((clue)=>{
@@ -120,23 +129,66 @@ function isCorrect(category)
     }
    
 }
+
 function prompt(clue)
 {
     console.clear();
     //Take the body and Store it in a temp variable
     console.log(clue)
-    let question=document.getElementsByTagName('body')[0];
-    let log = question.innerHTML;
-    question.innerHTML=
-    `
-    <div class='container'>
-        <div class='box' id='question'>
-            <h2>${clue.question}</h2>
-        </div>
-        <textarea id='answer'></textarea>
-    </div>
     
-    `
+    let question=document.getElementsByTagName('body')[0];
+    let game = document.getElementsByClassName('game')[0];
+    game.style.visibility='hidden';
+    
+    let counter= 0;
+    let log = question.innerHTML;
+    let container=document.createElement('div')
+        container.className='container'
+    let box = document.createElement('div')
+        box.id='question';
+        box.className='box';
+    let timer = document.createElement('h1')
+        timer.className='timer'
+        
+    let prompt =document.createElement('h2')
+        prompt.innerText=clue.question
+        box.appendChild(prompt)
+    let answer=document.createElement('textarea');
+        answer.addEventListener('keypress',(e)=>{
+            if (e.key === 'Enter') {
+                question.removeChild(container)
+                game.style.visibility='visible'
+              }
+        })
+        answer.id='answer'
+        // container.appendChild(timer)
+        container.append(timer)
+        container.appendChild(box);
+        container.appendChild(answer);
+        question.appendChild(container);
+        
+        //Set Up The Timer
+        setInterval(()=>
+        {
+            if(counter==30)
+            {
+                question.removeChild(container)
+                clearInterval(this)
+                game.style.visibility='visible';
+            }
+            counter++;
+            timer.innerText=counter;
+        },1000)
+        
+        if(answer.innerText==clue.answer)
+        {
+            return true;
+        }
+        else{
+            
+            return false;
+        }
+        
 
     //Create new HTML for prompt and set it to the body
             //New Promp contains the question, a place to type the answer, a timer, and a submit button

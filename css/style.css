@@ -1,9 +1,17 @@
 
 body {
+    display:flex;
+    flex-direction: column;
    background-color: tan;
    height: 50%;
   
 
+}
+.timer
+{   display:initial;
+    position:absolute;
+    top:left;
+    margin-top:10px;
 }
 .box
 {
