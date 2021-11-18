@@ -186,28 +186,39 @@ function getScore() {
 // }
 
 function prompt(box, clue) {
-  box.addEventListener("click", function clicked(e) {
-    e.target.innerText = "";
-    let stagedemo = document.getElementsByClassName("stagedemo")[0];
-    e.target.style.animation = "grow 0.5s 1 ";
-    //After the animation
-    e.target.addEventListener('animationend', () => {
-      e.target.style.animation = "none"
-      stagedemo.style.display = "none";
       let score = getScore();
       let scoreboard = document.getElementById("score");
       let game = document.getElementsByClassName("game")[0];
       let prompt = document.createElement("div");
-      prompt.setAttribute("class", "box");
       let question = document.createElement("h2");
-      let answer = document.createElement("textarea");  
+      let answer = document.createElement("textarea");
+      let timer = document.createElement("h1");
+      let counter = 0;
+  box.addEventListener("click", function clicked(e) {
+   
+    e.target.innerText = "";
+    e.target.removeEventListener("click", clicked);
+    let stagedemo = document.getElementsByClassName("stagedemo")[0];
+    e.target.style.animation = "grow 0.5s 1 ";
+    e.target.removeEventListener('click', () => {});
+    //After the animation
+    e.target.addEventListener('animationend', () => {
+      //remove animation from e.target
+      e.target.style.animation = "";
+      //remove on click event from target
+     
+      stagedemo.style.display = "none";
+      prompt.setAttribute("class", "box");
       answer.setAttribute("id", "answer");
       question.innerText = clue.question;
       prompt.style.height=stagedemo.style.height;
       prompt.style.width=stagedemo.style.width;
-      let timer = document.createElement("h1");
       timer.innertext=0;
-      let counter = 0;
+      prompt.appendChild(question);
+      game.appendChild(timer);
+      game.appendChild(prompt);
+      game.appendChild(answer);
+      
       let time = setInterval(() => {
             if (counter == 30) 
             {
@@ -248,11 +259,9 @@ function prompt(box, clue) {
           scoreboard.innerText = "$" + score;
         }
       });
-      prompt.appendChild(question);
-      game.appendChild(timer);
-      game.appendChild(prompt);
-      game.appendChild(answer);
+     
     });
+   
     
     //Make Box full screen
     e.target.style.selfAlign = "center";
