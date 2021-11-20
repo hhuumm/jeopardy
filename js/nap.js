@@ -51,22 +51,26 @@ categories.then(async (data) => {
     boxes[index].innerHTML = category.title.toUpperCase();
     let incr = index + 6;
     //Since we know that we have all the values in the category, we for loop for each value and get the clue
-    for (let cost = 200; cost < 1001; cost += 200) {
+    for (let cost = 200; cost < 1001; cost += 200) 
+    {
       let gclue = getClue(cost, category.clues);
       boxes[incr].innerHTML = gclue.value;
-      if (incr != dailyDouble) prompt(boxes[incr], gclue);
+      if (incr == dailyDouble)
+      {
+        boxes[incr].setAttribute("id", "dd");
+        boxes[incr].innerHTML="DAILY DOUBLE";
+        dailyDoublePrompt();
+
+      }
+
+        prompt(boxes[incr], gclue)
+      
       //increment
       incr += 6;
     }
   });
 
-  //Set up the Daily Double
-  boxes[dailyDouble].innerHTML = "DAILY DOUBLE";
-  boxes[dailyDouble].addEventListener("click", function ddclicked(e) {
-    dailyDoublePrompt();
-    e.target.innerHTML = "";
-    e.target.removeEventListener("click", ddclicked);
-  });
+
 });
 
 //Functions
@@ -116,6 +120,7 @@ function isCorrect(category) {
 
 function getScore() {
   let scoreboard = document.getElementById("score");
+  console.log(scoreboard.innerText);
   return parseInt(scoreboard.innerText.substring(1));
 }
 
@@ -272,32 +277,37 @@ function getScore() {
 // }
 
 
-function prompt(box, clue) {
+function prompt(box, clue) 
+{
  
-  let score = getScore();
+ if(box.id=="dd"){return}
   let stagedemo=document.getElementsByClassName("stagedemo")[0];
   //grab the scoreboard
   let scoreboard = document.getElementById("score");
-  let stylestorage=box.style;
 
   box.addEventListener("click", function clicked(e) {
+
+    let score = getScore();
     //hide all the children nodes from the stage
     
 
-    let selectedbox=e.target;
+    e.target.removeEventListener("click", clicked);
+    e.target.innerText = "";
     console.log(clue.answer)
   //get the stage element
     let stage = document.getElementsByClassName("stage")[0];
 
   //make a copy of element node to be used for animation
     let cell = e.target.cloneNode(true);
+    cell.zIndex = "3";
     cell.innerText=""
-    cell.setAttribute("class","animation")
+    cell.setAttribute("class","animation");
+    stage.style.display = "none";
     cell.style.animation = "grow 0.5s normal";
+ 
     stagedemo.appendChild(cell);
 
-    //hide the children of stage
-    stage.style.display = "none";
+    
     //create a h2 header for the prompt
     let prmpt = document.createElement("h2");
     prmpt.innerText = clue.question;
@@ -343,10 +353,10 @@ function prompt(box, clue) {
             let fanswer=clue.answer.replace(/(<([^>]+)>)/gi, "").toLowerCase();
             clearInterval(time);
             if (answer.value.toLowerCase() == `${fanswer}`) {
-              score += clue.value;
+              score = score + clue.value;
             } 
             else {
-              score -= clue.value;
+              score = score - clue.value;
             }
             scoreboard.innerText = "$" + score;
 
@@ -371,31 +381,9 @@ function generateRandomNumber(max, min) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function dailyDoublePrompt() {
+function dailyDoublePrompt(box,clue) {
   let score = getScore();
-  //Hide the game
-  let body = document.getElementsByTagName("body")[0];
-  let game = document.getElementsByClassName("game")[0];
-  game.style.display = "none";
-  let wager = document.createElement("textarea");
-  wager.addEventListener("keypress", (e) => {
-    if (e.key === "Enter" && !isNaN(wager.value)) {
-      // Parse the value of the wager to an integer
-      let wagerValue = parseInt(wager.value);
-      // If the wager is greater than the score,alert the user
-      if (wagerValue > score) {
-        alert("You can't wager more than you have!");
-        return;
-      }
-    } else if (e.key === "Enter") {
-      alert("Please enter a valid number!");
-      wager.value = "";
-    }
-  });
-  wager.id = "answer";
-
-  //Append wager element to the body
-  body.appendChild(wager);
+  
 }
 
 function removeRegex(string) {
