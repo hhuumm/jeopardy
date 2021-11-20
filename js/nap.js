@@ -185,88 +185,187 @@ function getScore() {
 //   answer.focus();
 // }
 
-function prompt(box, clue) {
-      let score = getScore();
-      let scoreboard = document.getElementById("score");
-      let game = document.getElementsByClassName("game")[0];
-      let prompt = document.createElement("div");
-      let question = document.createElement("h2");
-      let answer = document.createElement("textarea");
-      let timer = document.createElement("h1");
-      let counter = 0;
-  box.addEventListener("click", function clicked(e) {
+
+// function prompt(box, clue) {
+//       let score = getScore();
+//       let scoreboard = document.getElementById("score");
+//       let game = document.getElementsByClassName("game")[0];
+//       let prompt = document.createElement("div");
+//       let question = document.createElement("h2");
+//       let answer = document.createElement("textarea");
+//       let timer = document.createElement("h1");
+//       let counter = 0;
+//       timer.innerText=counter;
+//   box.addEventListener("click", function clicked(e) {
    
-    e.target.innerText = "";
-    e.target.removeEventListener("click", clicked);
-    let stagedemo = document.getElementsByClassName("stagedemo")[0];
-    e.target.style.animation = "grow 0.5s 1 ";
-    e.target.removeEventListener('click', () => {});
-    //After the animation
-    e.target.addEventListener('animationend', () => {
-      //remove animation from e.target
-      e.target.style.animation = "";
-      //remove on click event from target
+//     e.target.innerText = "";
+//     e.target.setAttribute("class","stage")
+//     e.target.removeEventListener("click", clicked);
+//     let stagedemo = document.getElementsByClassName("stagedemo")[0];
+//     e.target.style.animation = "grow 0.5s 1 ";
+//     e.target.removeEventListener('click', () => {});
+//     //After the animation
+//     e.target.addEventListener('animationend', () => {
+//       //remove animation from e.target
+//       e.target.style.animation = "";
+//       //remove on click event from target
      
-      stagedemo.style.display = "none";
-      prompt.setAttribute("class", "box");
-      answer.setAttribute("id", "answer");
-      question.innerText = clue.question;
-      prompt.style.height=stagedemo.style.height;
-      prompt.style.width=stagedemo.style.width;
-      timer.innertext=0;
-      prompt.appendChild(question);
-      game.appendChild(timer);
-      game.appendChild(prompt);
-      game.appendChild(answer);
+//       // stagedemo.style.display = "none";
+//       // prompt.setAttribute("class", "box");
+//       // answer.setAttribute("id", "answer");
+//       // question.innerText = clue.question;
+//       // prompt.style.height=stagedemo.style.height;
+//       // prompt.style.width=stagedemo.style.width;
+//       // timer.innertext=0;
+//       // prompt.appendChild(question);
+//       // game.appendChild(timer);
+//       // game.appendChild(prompt);
+//       // game.appendChild(answer);
       
+//       let time = setInterval(() => {
+//             if (counter == 30) 
+//             {
+//               prompt.removeChild(question);
+//               game.removeChild(answer);
+//               game.removeChild(timer);
+//               game.removeChild(prompt);
+
+//               clearInterval(time);
+//               stagedemo.style.display = "block";
+//             }
+//             counter++;
+//             timer.innerText = counter;
+//           }, 1000);
+
+// answer.addEventListener("keypress", function clicked(e) {
+//  //wait for enter keypress
+//  e.target.innertext="";
+//   if (e.key === "Enter") {
+//         prompt.removeChild(question);
+//         game.removeChild(answer);
+//         game.removeChild(timer);
+//         game.removeChild(prompt);
+//     let fanswer=clue.answer.replace(/(<([^>]+)>)/gi, "").toLowerCase();
+//     console.log(fanswer);
+//     stagedemo.style.display = "block";
+//     clearInterval(time);
+//     if (
+//       answer.value.toLowerCase() ==
+//       `${fanswer}`
+//     ) {
+//       score += clue.value;
+//     } else {
+//       score -= clue.value;
+//       //Implement code beneath for the weak
+//       // score = score < 0 ? 0 : score;
+//     }
+//     scoreboard.innerText = "$" + score;
+//   }
+// });
+     
+//     });
+   
+    
+//     //Make Box full screen
+//     e.target.style.selfAlign = "center";
+//   });
+// }
+
+
+function prompt(box, clue) {
+ 
+  let score = getScore();
+  let stagedemo=document.getElementsByClassName("stagedemo")[0];
+  //grab the scoreboard
+  let scoreboard = document.getElementById("score");
+  let stylestorage=box.style;
+
+  box.addEventListener("click", function clicked(e) {
+    //hide all the children nodes from the stage
+    
+
+    let selectedbox=e.target;
+    console.log(clue.answer)
+  //get the stage element
+    let stage = document.getElementsByClassName("stage")[0];
+
+  //make a copy of element node to be used for animation
+    let cell = e.target.cloneNode(true);
+    cell.innerText=""
+    cell.setAttribute("class","animation")
+    cell.style.animation = "grow 0.5s normal";
+    stagedemo.appendChild(cell);
+
+    //hide the children of stage
+    stage.style.display = "none";
+    //create a h2 header for the prompt
+    let prmpt = document.createElement("h2");
+    prmpt.innerText = clue.question;
+    //create a textarea for the answer
+    let answer = document.createElement("textarea");
+    //set class of textarea to answer
+    answer.setAttribute("id", "answer");
+    //create a h1 for the timer
+    let timer = document.createElement("h1");
+    let counter = 0;
+    timer.innerText=counter;
+    //create a div for the prompt
+    let prompt = document.createElement("div");
+    //set cell class to prompt
+    //Add prmpt answer and timer to prompt
+      prompt.appendChild(timer);
+      prompt.appendChild(prmpt);
+      prompt.appendChild(answer);
+      cell.appendChild(prompt);
+
+    //set the interval for the timer
       let time = setInterval(() => {
             if (counter == 30) 
             {
-              prompt.removeChild(question);
-              game.removeChild(answer);
-              game.removeChild(timer);
-              game.removeChild(prompt);
-
+              stagedemo.removeChild(cell);
+              stage.style.display = "grid";
               clearInterval(time);
-              stagedemo.style.display = "block";
             }
             counter++;
             timer.innerText = counter;
           }, 1000);
+  
 
-      answer.addEventListener("keypress", function clicked(e) {
-       //wait for enter keypress
-       console.log(e.key);
-        if (e.key === "Enter") {
-              prompt.removeChild(question);
-              game.removeChild(answer);
-              game.removeChild(timer);
-              game.removeChild(prompt);
-          let fanswer=clue.answer.replace(/(<([^>]+)>)/gi, "").toLowerCase();
-          console.log(fanswer);
-          stagedemo.style.display = "block";
-          clearInterval(time);
-          if (
-            answer.value.toLowerCase() ==
-            `${fanswer}`
-          ) {
-            score += clue.value;
-          } else {
-            score -= clue.value;
-            //Implement code beneath for the weak
-            // score = score < 0 ? 0 : score;
+    answer.addEventListener("keypress", (e) => {
+          if (e.key === "Enter") 
+          {
+            stage.style.display = "grid";
+            stagedemo.removeChild(cell);
+            cell.removeChild(prompt);
+            //set animation direction for cell in reverse
+            cell.style.animation = "grow 0.5s reverse";
+            //trigger the animation of cell
+            let fanswer=clue.answer.replace(/(<([^>]+)>)/gi, "").toLowerCase();
+            clearInterval(time);
+            if (answer.value.toLowerCase() == `${fanswer}`) {
+              score += clue.value;
+            } 
+            else {
+              score -= clue.value;
+            }
+            scoreboard.innerText = "$" + score;
+
           }
-          scoreboard.innerText = "$" + score;
-        }
-      });
-     
-    });
+        });
+
    
+
+ 
+
+
+
+ 
     
-    //Make Box full screen
-    e.target.style.selfAlign = "center";
+
   });
+
 }
+
 
 function generateRandomNumber(max, min) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
