@@ -9,7 +9,7 @@ const ROOT = dirname(fileURLToPath(import.meta.url));
 const PORT = Number(process.env.PORT) || 4173;
 const archive = JSON.parse(await readFile(join(ROOT, "data", "boards.json"), "utf8"));
 const rooms = new Map();
-const mime = { ".html": "text/html; charset=utf-8", ".css": "text/css; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".json": "application/json; charset=utf-8", ".png": "image/png", ".jpg": "image/jpeg", ".mp3": "audio/mpeg" };
+const mime = { ".html": "text/html; charset=utf-8", ".css": "text/css; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".json": "application/json; charset=utf-8", ".svg": "image/svg+xml", ".png": "image/png", ".jpg": "image/jpeg", ".mp3": "audio/mpeg" };
 
 function cleanName(value) { return String(value || "Contestant").replace(/[^a-z0-9 _'-]/gi, "").trim().slice(0, 18) || "Contestant"; }
 function roomCode() {
