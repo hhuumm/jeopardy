@@ -100,6 +100,7 @@ function buildBoard() {
 }
 async function startGame(event) {
   event?.preventDefault(); state.name = $("#player-name").value.trim() || "Contestant"; state.score = 0; state.remaining = 30;
+  $("#final-standings").replaceChildren(); $("#room-panel").hidden = true;
   await chooseBoard();
   state.dailyDouble = Math.floor(Math.random() * 30); state.current = null; state.wager = null;
   els.greeting.textContent = state.boardDate ? `${state.name}, your board is from ${new Date(`${state.boardDate}T12:00:00`).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" })}.` : `${state.name}, the board is yours.`;

@@ -1,0 +1,17 @@
+{
+  "name": "jeopardy-home-edition",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "check": "node --check server.mjs && node --check js/nap.js && node --check js/multiplayer.js && node --check scripts/build-boards.mjs",
+    "test": "node scripts/test-multiplayer.mjs"
+  },
+  "engines": {
+    "node": ">=16"
+  },
+  "dependencies": {
+    "ws": "8.21.3"
+  }
+}

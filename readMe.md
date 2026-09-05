@@ -1,14 +1,23 @@
 # Jeopardy! Home Edition
 
-A modern, single-player Jeopardy-style browser game with timed responses, scorekeeping, Daily Doubles, sound effects, and keyboard-friendly controls.
+A modern Jeopardy-style browser game with solo play and synchronized multiplayer rooms. Multiplayer includes first-buzzer locking, server-owned scores and timers, Daily Doubles, reconnect support, and host controls.
 
 ## Run locally
 
-Serve the repository with any static web server, then open the printed local URL. For example:
+Install the single WebSocket dependency and start the game server:
 
 ```sh
-python -m http.server 4173
+npm install
+npm start
 ```
+
+Open `http://localhost:4173`. To test multiplayer, create a room in one browser or device and join its four-letter code from another. Devices on the same network can use the host computer's local IP address followed by `:4173`.
+
+## Hosting multiplayer
+
+The app requires a Node.js host with WebSocket support; a static-only host such as GitHub Pages cannot run multiplayer rooms. Deploy the repository as one web service with `npm install` as the build command and `npm start` as the start command. The server respects the host's `PORT` environment variable and exposes `/health` for health checks. No secrets or database are required for the current ephemeral-room version.
+
+Rooms live in server memory and are intended for active game sessions. A server restart clears active rooms but does not affect the clue archive.
 
 ## Clue archive
 

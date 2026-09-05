@@ -6,7 +6,7 @@
   <title>Jeopardy! — Home Edition</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css"><script defer src="js/nap.js"></script>
+  <link rel="stylesheet" href="css/style.css"><script defer src="js/multiplayer.js"></script><script defer src="js/nap.js"></script>
 </head>
 <body>
   <div class="ambient" aria-hidden="true"></div>
@@ -23,23 +23,37 @@
       <p class="intro">A real archive board, thirty clues, and one Daily Double hiding somewhere it absolutely should not be.</p>
       <form class="player-form" id="player-form"><label for="player-name">Contestant name</label><div class="action-row">
         <input id="player-name" maxlength="18" autocomplete="nickname" placeholder="Future champion">
-        <button class="primary-button" type="submit">Take the board <span aria-hidden="true">→</span></button>
+        <button class="primary-button" type="submit">Play solo <span aria-hidden="true">→</span></button>
       </div></form>
+      <div class="mode-divider"><span>OR PLAY TOGETHER</span></div>
+      <div class="multiplayer-actions">
+        <button class="secondary-button" id="create-room" type="button">Create a room</button>
+        <form id="join-room-form" class="join-form"><label class="sr-only" for="join-code">Room code</label><input id="join-code" maxlength="4" autocomplete="off" placeholder="ROOM CODE"><button class="secondary-button" type="submit">Join room</button></form>
+      </div>
+      <p class="connection-error" id="connection-error" role="alert" hidden></p>
       <p class="tiny-copy">No pressure. Your imaginary studio audience is very supportive.</p>
+    </section>
+
+    <section class="lobby-screen" id="lobby-screen" hidden>
+      <p class="eyebrow">LIVE GAME ROOM</p><h2>The green room</h2><p>Share this code with your fellow know-it-alls.</p>
+      <button class="room-code" id="lobby-code" title="Copy room code">ABCD <span>copy</span></button>
+      <div class="lobby-players" id="lobby-players"></div>
+      <button class="primary-button" id="start-multiplayer">Start the game →</button><p class="tiny-copy" id="lobby-note">The host starts when everyone is ready.</p>
     </section>
 
     <section class="game-screen" id="game-screen" hidden>
       <div class="round-strip"><div><span class="live-dot"></span> JEOPARDY! ROUND</div><p id="player-greeting">Choose a clue</p><button class="text-button" id="new-game">New game</button></div>
+      <div class="room-panel" id="room-panel" hidden><button id="game-room-code" title="Copy room code">ROOM ABCD</button><div id="player-strip"></div></div>
       <div class="board-wrap"><div class="board" id="board" aria-label="Jeopardy game board"></div></div>
       <p class="board-tip">Pick any dollar amount. You can also tab through the board and press Enter.</p>
     </section>
 
-    <section class="end-screen" id="end-screen" hidden><p class="eyebrow">THAT'S THE BOARD</p><h2 id="final-headline">You survived television.</h2><div class="final-score" id="final-score">$0</div><p id="final-message"></p><button class="primary-button" id="play-again">Play another board ↻</button></section>
+    <section class="end-screen" id="end-screen" hidden><p class="eyebrow">THAT'S THE BOARD</p><h2 id="final-headline">You survived television.</h2><div class="final-score" id="final-score">$0</div><div id="final-standings"></div><p id="final-message"></p><button class="primary-button" id="play-again">Play another board ↻</button></section>
   </main>
 
   <dialog class="clue-dialog" id="clue-dialog"><div class="dialog-shell">
     <div class="clue-meta"><span id="clue-category">CATEGORY</span><strong id="clue-value">$200</strong></div><div class="timer-track"><div id="timer-bar"></div></div>
-    <div class="clue-content" id="clue-view"><p class="clue-label">THE CLUE</p><h2 id="clue-question"></h2><form id="answer-form"><label for="answer-input">Your response</label><div class="action-row"><input id="answer-input" autocomplete="off" placeholder="What is…" required><button class="primary-button" type="submit">Lock it in</button></div></form><button class="pass-button" id="pass-button">I got nothing</button></div>
+    <div class="clue-content" id="clue-view"><p class="clue-label">THE CLUE</p><h2 id="clue-question"></h2><p class="clue-status" id="clue-status" hidden></p><button class="buzz-button" id="buzz-button" hidden>BUZZ</button><form id="answer-form"><label for="answer-input">Your response</label><div class="action-row"><input id="answer-input" autocomplete="off" placeholder="What is…" required><button class="primary-button" type="submit">Lock it in</button></div></form><button class="pass-button" id="pass-button">I got nothing</button></div>
     <div class="wager-view" id="wager-view" hidden><p class="daily-kicker">DAILY DOUBLE</p><h2>Make it interesting.</h2><p>You may wager from $5 to <strong id="max-wager">$1,000</strong>.</p><form id="wager-form"><label for="wager-input">Your wager</label><div class="action-row"><input id="wager-input" type="number" min="5" step="5" required><button class="primary-button" type="submit">Bet boldly</button></div></form></div>
     <div class="result-view" id="result-view" hidden><p class="result-stamp" id="result-stamp">CORRECT</p><h2 id="correct-answer"></h2><p id="result-copy"></p><button class="primary-button" id="return-board">Back to the board →</button></div>
   </div></dialog>
