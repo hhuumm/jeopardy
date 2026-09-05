@@ -143,6 +143,8 @@ server.on("upgrade", (request, socket, head) => {
   sockets.handleUpgrade(request, socket, head, (ws) => sockets.emit("connection", ws));
 });
 sockets.on("connection", (ws) => {
+  ws.isAlive = true;
+  ws.on("pong", () => { ws.isAlive = true; });
   ws.on("message", (data) => handleMessage(ws, data.toString()));
   ws.on("close", () => {
     const room = rooms.get(ws.roomCode), player = room?.players.get(ws.playerId); if (!room || !player) return;
@@ -151,5 +153,11 @@ sockets.on("connection", (ws) => {
     broadcast(room);
   });
 });
+setInterval(() => {
+  for (const ws of sockets.clients) {
+    if (!ws.isAlive) { ws.terminate(); continue; }
+    ws.isAlive = false; ws.ping();
+  }
+}, 25000).unref();
 setInterval(() => { const cutoff = Date.now() - 6 * 60 * 60 * 1000; for (const [code, room] of rooms) if (room.createdAt < cutoff && !connectedPlayers(room).length) { clearRoomTimer(room); rooms.delete(code); } }, 60000).unref();
 server.listen(PORT, "0.0.0.0", () => console.log(`Jeopardy is live at http://localhost:${PORT}`));
