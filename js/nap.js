@@ -1,391 +1,148 @@
-//Initial Fetch of 100 Categrories
-categories = getData();
+const FALLBACK_GAME = [
+  { category: "The Internet Is Forever", clues: [
+    [200, "This feline reaction image had grammatically creative cravings for a cheeseburger.", ["lolcat", "lolcats"]],
+    [400, "This video platform launched in 2005 with a trip to the zoo.", ["youtube"]],
+    [600, "The number in the HTTP status code for 'Not Found.'", ["404"]],
+    [800, "Before X, this blue-bird platform limited posts to 140 characters.", ["twitter"]],
+    [1000, "This 1989 proposal by Tim Berners-Lee became the World Wide Web.", ["information management a proposal", "world wide web proposal", "the web"]]
+  ]},
+  { category: "Science, Allegedly", clues: [
+    [200, "The planet famous for its rings and for absolutely showing off.", ["saturn"]],
+    [400, "H₂O is the chemical formula for this substance.", ["water"]],
+    [600, "This force keeps your feet on the ground and ruins every dropped phone.", ["gravity"]],
+    [800, "The powerhouse of the cell—yes, the meme was right.", ["mitochondria", "mitochondrion"]],
+    [1000, "The boundary around a black hole beyond which nothing can escape.", ["event horizon"]]
+  ]},
+  { category: "Main Character Energy", clues: [
+    [200, "This green ogre just wanted his swamp back.", ["shrek"]],
+    [400, "She volunteers as tribute in The Hunger Games.", ["katniss everdeen", "katniss"]],
+    [600, "This archaeologist's hat has survived more adventures than most people.", ["indiana jones", "indy"]],
+    [800, "In The Matrix, he learns that he is 'The One.'", ["neo", "thomas anderson"]],
+    [1000, "This Jane Austen heroine declares she is only resolved to act in the manner that constitutes her happiness.", ["elizabeth bennet", "elizabeth"]]
+  ]},
+  { category: "Snack Attack", clues: [
+    [200, "This movie-theater snack begins as a hard kernel.", ["popcorn"]],
+    [400, "Guacamole's main ingredient.", ["avocado", "avocados"]],
+    [600, "This Italian dessert's name translates roughly to 'pick me up.'", ["tiramisu"]],
+    [800, "The French term for cooking food slowly in its own fat.", ["confit"]],
+    [1000, "This Japanese seasoning combines soy sauce, roasted wheat, salt, and koji.", ["shoyu", "soy sauce"]]
+  ]},
+  { category: "Places With Receipts", clues: [
+    [200, "The Eiffel Tower calls this city home.", ["paris"]],
+    [400, "This is the largest ocean on Earth.", ["pacific", "pacific ocean"]],
+    [600, "The ancient city of Petra is in this modern country.", ["jordan"]],
+    [800, "This tiny nation is entirely surrounded by South Africa.", ["lesotho"]],
+    [1000, "The world's northernmost capital of a sovereign state.", ["reykjavik", "reykjavík"]]
+  ]},
+  { category: "Words Are Weird", clues: [
+    [200, "A word that means the opposite of another word.", ["antonym"]],
+    [400, "This punctuation mark can join two independent clauses; people fear it anyway.", ["semicolon"]],
+    [600, "A word like 'buzz' that imitates the sound it describes.", ["onomatopoeia"]],
+    [800, "This pangram begins 'The quick brown fox.'", ["the quick brown fox jumps over the lazy dog"]],
+    [1000, "A word that reads the same forward and backward, like 'level.'", ["palindrome"]]
+  ]}
+];
 
-categories.then(async (data) => {
-  //Array of Correct Filtered Categories that meet our criteria
-  let filteredcat = [];
-  let boxes = [];
-  let dailyDouble = generateRandomNumber(6, 35);
-  console.log(dailyDouble);
-  console.log("This is the daily double index");
-  //Grab six categories with all the correct cost values and place into filteredcat[]
-  for (let i = 0; i < 6; i++) {
-    //Checking that each category has questions with
-    //costs from 200-1000 in increments of 200
-    let numb = getRandomInt(data.length);
-    await fetch(
-      `http://jservice.io/api/category?id=${data.splice(numb, 1)[0].id}`
-    )
-      .then((req) => req.json())
-      .then((category) => {
-        let result = isCorrect(category);
-        if (!result) {
-          i--;
-        } else {
-          filteredcat.push(category);
-        }
-      });
-  }
+let game = FALLBACK_GAME;
+let boardArchivePromise;
 
-  //Grab the main stage
-  let container = document.getElementsByClassName("stage")[0];
+const $ = (selector) => document.querySelector(selector);
+const els = {
+  start: $("#start-screen"), game: $("#game-screen"), end: $("#end-screen"), board: $("#board"),
+  score: $("#score"), remaining: $("#remaining"), greeting: $("#player-greeting"), dialog: $("#clue-dialog"),
+  category: $("#clue-category"), value: $("#clue-value"), question: $("#clue-question"), input: $("#answer-input"),
+  clueView: $("#clue-view"), wagerView: $("#wager-view"), resultView: $("#result-view"), timer: $("#timer-bar"),
+  stamp: $("#result-stamp"), correct: $("#correct-answer"), resultCopy: $("#result-copy")
+};
+let state = { name: "Contestant", score: 0, remaining: 30, dailyDouble: 0, current: null, wager: null, timer: null, sound: true, boardDate: null };
 
-  //Create the Cells for Jeopardy
-  for (let i = 0; i < 36; i++) {
-    let box = document.createElement("div");
-    if (i < 6) {
-      box.setAttribute("id", "cat");
-    } else {
-      box.setAttribute("id", i - 6);
-      box.setAttribute("state", false);
-    }
-    box.setAttribute("class", "box");
-
-    box.innerHTML = ("" + box.id).replace("box", "");
-    boxes.push(box);
-    container.appendChild(box);
-  }
-
-  //Populate Cells with Category and Clue Data
-  filteredcat.map((category, index) => {
-    boxes[index].innerHTML = category.title.toUpperCase();
-    let incr = index + 6;
-    //Since we know that we have all the values in the category, we for loop for each value and get the clue
-    for (let cost = 200; cost < 1001; cost += 200) 
-    {
-      let gclue = getClue(cost, category.clues);
-      boxes[incr].innerHTML = gclue.value;
-      if (incr == dailyDouble)
-      {
-        boxes[incr].setAttribute("id", "dd");
-        boxes[incr].innerHTML="DAILY DOUBLE";
-        dailyDoublePrompt();
-
-      }
-
-        prompt(boxes[incr], gclue)
-      
-      //increment
-      incr += 6;
-    }
-  });
-
-
-});
-
-//Functions
-
-function getClue(cost, clues) {
-  return clues.filter((clue) => {
-    return clue.value == cost;
-  })[0];
+function money(value) { const sign = value < 0 ? "−" : ""; return `${sign}$${Math.abs(value).toLocaleString()}`; }
+function normalize(value) {
+  return value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/<[^>]*>/g, "")
+    .replace(/^(what|who|where|when)\s+(is|are|was|were)\s+/i, "").replace(/^(a|an|the)\s+/i, "")
+    .replace(/[^a-z0-9 ]/g, "").replace(/\s+/g, " ").trim();
 }
-
-async function getData() {
-  return await fetch("http://jservice.io/api/categories?count=100")
-    .then((req) => req.json())
-    .then((data) => {
-      return data;
+function isCorrect(guess, answers) {
+  const clean = normalize(guess);
+  return answers.some((answer) => { const target = normalize(answer); if (clean === target) return true; if (clean.length < 5 || target.length < 5) return false; return clean.includes(target) || target.includes(clean); });
+}
+function tone(freq = 440, duration = .12, type = "sine") {
+  if (!state.sound) return; const AudioCtx = window.AudioContext || window.webkitAudioContext; if (!AudioCtx) return;
+  const ctx = new AudioCtx(), osc = ctx.createOscillator(), gain = ctx.createGain(); osc.type = type; osc.frequency.value = freq;
+  gain.gain.setValueAtTime(.07, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(.001, ctx.currentTime + duration); osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + duration); osc.onended = () => ctx.close();
+}
+function showScreen(screen) { [els.start, els.game, els.end].forEach((item) => item.hidden = item !== screen); }
+function updateStatus() { els.score.textContent = money(state.score); els.remaining.textContent = state.remaining; }
+async function chooseBoard() {
+  try {
+    boardArchivePromise ??= fetch("data/boards.json").then((response) => {
+      if (!response.ok) throw new Error(`Board archive returned ${response.status}`);
+      return response.json();
     });
-}
-
-async function getQuestion(clue) {
-  return await fetch(`http://jservice.io/api/category?id=${clue.id}`)
-    .then((req) => req.json())
-    .then((questions) => console.log(questions));
-}
-
-function getRandomInt(max) {
-  return Math.floor(Math.random() * max);
-}
-
-function isCorrect(category) {
-  const set = new Set();
-  category.clues.map((clue, indx) => {
-    set.add(clue.value);
-  });
-
-  if (
-    set.has(200) &&
-    set.has(400) &&
-    set.has(600) &&
-    set.has(800) &&
-    set.has(1000)
-  ) {
-    return true;
-  } else {
-    return false;
+    const { boards } = await boardArchivePromise;
+    const selected = boards[Math.floor(Math.random() * boards.length)];
+    game = selected.categories;
+    state.boardDate = selected.date;
+  } catch (error) {
+    console.warn("Using the built-in board because the archive could not load.", error);
+    game = FALLBACK_GAME;
+    state.boardDate = null;
   }
 }
-
-function getScore() {
-  let scoreboard = document.getElementById("score");
-  console.log(scoreboard.innerText);
-  return parseInt(scoreboard.innerText.substring(1));
-}
-
-// function prompt(clue) {
-//   console.clear();
-//   //Take the body and Store it in a temp variable
-//   console.log(clue);
-//   let scoreboard = document.getElementById("score");
-//   let score = getScore();
-//   let body = document.getElementsByTagName("body")[0];
-// let game = document.getElementsByClassName("game")[0];
-// game.style.display = "none";
-//   let counter = 0;
-//   let container = document.createElement("div");
-//   container.className = "container";
-//   let box = document.createElement("div");
-//   box.id = "question";
-//   box.className = "box";
-//   let timer = document.createElement("h1");
-//   timer.className = "timer";
-//   timer.innerText = 0;
-
-//   let prompt = document.createElement("h2");
-//   prompt.innerText = clue.question;
-//   box.appendChild(prompt);
-//   let answer = document.createElement("textarea");
-//   //Set Up The Timer
-//   let time = setInterval(() => {
-//     if (counter == 30) {
-//       body.removeChild(container);
-//       body.removeChild(timer);
-//       clearInterval(time);
-//       game.style.display = "block";
-//     }
-//     counter++;
-//     timer.innerText = counter;
-//   }, 1000);
-//   answer.addEventListener("keypress", (e) => {
-//     if (e.key === "Enter") {
-//       body.removeChild(container);
-//       body.removeChild(timer);
-//       let fanswer=clue.answer.replace(/(<([^>]+)>)/gi, "").toLowerCase();
-//       console.log(fanswer);
-
-//       game.style.display = "block";
-//       clearInterval(time);
-//       if (
-//         answer.value.toLowerCase() ==
-//         `${fanswer}`
-//       ) {
-//         score += clue.value;
-//       } else {
-//         score -= clue.value;
-//         //Implement code beneath for the weak
-//         // score = score < 0 ? 0 : score;
-//       }
-//       scoreboard.innerText = "$" + score;
-//     }
-//   });
-//   answer.id = "answer";
-
-//   // container.appendChild(timer)
-//   body.append(timer);
-//   container.appendChild(box);
-//   container.appendChild(answer);
-//   body.appendChild(container);
-//   answer.focus();
-// }
-
-
-// function prompt(box, clue) {
-//       let score = getScore();
-//       let scoreboard = document.getElementById("score");
-//       let game = document.getElementsByClassName("game")[0];
-//       let prompt = document.createElement("div");
-//       let question = document.createElement("h2");
-//       let answer = document.createElement("textarea");
-//       let timer = document.createElement("h1");
-//       let counter = 0;
-//       timer.innerText=counter;
-//   box.addEventListener("click", function clicked(e) {
-   
-//     e.target.innerText = "";
-//     e.target.setAttribute("class","stage")
-//     e.target.removeEventListener("click", clicked);
-//     let stagedemo = document.getElementsByClassName("stagedemo")[0];
-//     e.target.style.animation = "grow 0.5s 1 ";
-//     e.target.removeEventListener('click', () => {});
-//     //After the animation
-//     e.target.addEventListener('animationend', () => {
-//       //remove animation from e.target
-//       e.target.style.animation = "";
-//       //remove on click event from target
-     
-//       // stagedemo.style.display = "none";
-//       // prompt.setAttribute("class", "box");
-//       // answer.setAttribute("id", "answer");
-//       // question.innerText = clue.question;
-//       // prompt.style.height=stagedemo.style.height;
-//       // prompt.style.width=stagedemo.style.width;
-//       // timer.innertext=0;
-//       // prompt.appendChild(question);
-//       // game.appendChild(timer);
-//       // game.appendChild(prompt);
-//       // game.appendChild(answer);
-      
-//       let time = setInterval(() => {
-//             if (counter == 30) 
-//             {
-//               prompt.removeChild(question);
-//               game.removeChild(answer);
-//               game.removeChild(timer);
-//               game.removeChild(prompt);
-
-//               clearInterval(time);
-//               stagedemo.style.display = "block";
-//             }
-//             counter++;
-//             timer.innerText = counter;
-//           }, 1000);
-
-// answer.addEventListener("keypress", function clicked(e) {
-//  //wait for enter keypress
-//  e.target.innertext="";
-//   if (e.key === "Enter") {
-//         prompt.removeChild(question);
-//         game.removeChild(answer);
-//         game.removeChild(timer);
-//         game.removeChild(prompt);
-//     let fanswer=clue.answer.replace(/(<([^>]+)>)/gi, "").toLowerCase();
-//     console.log(fanswer);
-//     stagedemo.style.display = "block";
-//     clearInterval(time);
-//     if (
-//       answer.value.toLowerCase() ==
-//       `${fanswer}`
-//     ) {
-//       score += clue.value;
-//     } else {
-//       score -= clue.value;
-//       //Implement code beneath for the weak
-//       // score = score < 0 ? 0 : score;
-//     }
-//     scoreboard.innerText = "$" + score;
-//   }
-// });
-     
-//     });
-   
-    
-//     //Make Box full screen
-//     e.target.style.selfAlign = "center";
-//   });
-// }
-
-
-function prompt(box, clue) 
-{
- 
- if(box.id=="dd"){return}
-  let stagedemo=document.getElementsByClassName("stagedemo")[0];
-  //grab the scoreboard
-  let scoreboard = document.getElementById("score");
-
-  box.addEventListener("click", function clicked(e) {
-
-    let score = getScore();
-    //hide all the children nodes from the stage
-    
-
-    e.target.removeEventListener("click", clicked);
-    e.target.innerText = "";
-    console.log(clue.answer)
-  //get the stage element
-    let stage = document.getElementsByClassName("stage")[0];
-
-  //make a copy of element node to be used for animation
-    let cell = e.target.cloneNode(true);
-    cell.zIndex = "3";
-    cell.innerText=""
-    cell.setAttribute("class","animation");
-    stage.style.display = "none";
-    cell.style.animation = "grow 0.5s normal";
- 
-    stagedemo.appendChild(cell);
-
-    
-    //create a h2 header for the prompt
-    let prmpt = document.createElement("h2");
-    prmpt.innerText = clue.question;
-    //create a textarea for the answer
-    let answer = document.createElement("textarea");
-    //set class of textarea to answer
-    answer.setAttribute("id", "answer");
-    //create a h1 for the timer
-    let timer = document.createElement("h1");
-    let counter = 0;
-    timer.innerText=counter;
-    //create a div for the prompt
-    let prompt = document.createElement("div");
-    //set cell class to prompt
-    //Add prmpt answer and timer to prompt
-      prompt.appendChild(timer);
-      prompt.appendChild(prmpt);
-      prompt.appendChild(answer);
-      cell.appendChild(prompt);
-
-    //set the interval for the timer
-      let time = setInterval(() => {
-            if (counter == 30) 
-            {
-              stagedemo.removeChild(cell);
-              stage.style.display = "grid";
-              clearInterval(time);
-            }
-            counter++;
-            timer.innerText = counter;
-          }, 1000);
-  
-
-    answer.addEventListener("keypress", (e) => {
-          if (e.key === "Enter") 
-          {
-            stage.style.display = "grid";
-            stagedemo.removeChild(cell);
-            cell.removeChild(prompt);
-            //set animation direction for cell in reverse
-            cell.style.animation = "grow 0.5s reverse";
-            //trigger the animation of cell
-            let fanswer=clue.answer.replace(/(<([^>]+)>)/gi, "").toLowerCase();
-            clearInterval(time);
-            if (answer.value.toLowerCase() == `${fanswer}`) {
-              score = score + clue.value;
-            } 
-            else {
-              score = score - clue.value;
-            }
-            scoreboard.innerText = "$" + score;
-
-          }
-        });
-
-   
-
- 
-
-
-
- 
-    
-
+function buildBoard() {
+  els.board.replaceChildren();
+  game.forEach(({ category }) => { const heading = document.createElement("div"); heading.className = "category"; heading.textContent = category; els.board.append(heading); });
+  for (let row = 0; row < 5; row++) game.forEach((group, col) => {
+    const [value, question, answers] = group.clues[row], index = row * 6 + col, button = document.createElement("button");
+    button.className = "clue-tile"; button.textContent = `$${value}`; button.dataset.index = index; button.setAttribute("aria-label", `${group.category} for ${value} dollars`);
+    button.addEventListener("click", () => openClue({ category: group.category, value, question, answers, index, button })); els.board.append(button);
   });
-
+}
+async function startGame(event) {
+  event?.preventDefault(); state.name = $("#player-name").value.trim() || "Contestant"; state.score = 0; state.remaining = 30;
+  await chooseBoard();
+  state.dailyDouble = Math.floor(Math.random() * 30); state.current = null; state.wager = null;
+  els.greeting.textContent = state.boardDate ? `${state.name}, your board is from ${new Date(`${state.boardDate}T12:00:00`).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" })}.` : `${state.name}, the board is yours.`;
+  buildBoard(); updateStatus(); showScreen(els.game); tone(523, .12); setTimeout(() => tone(659, .16), 100);
+}
+function resetDialog() {
+  clearInterval(state.timer); state.timer = null; els.clueView.hidden = true; els.wagerView.hidden = true; els.resultView.hidden = true;
+  els.timer.style.transform = "scaleX(1)"; els.timer.style.background = "var(--gold)";
+}
+function openClue(clue) {
+  state.current = clue; state.wager = null; clue.button.disabled = true; state.remaining--; updateStatus(); resetDialog();
+  els.category.textContent = clue.category; els.value.textContent = `$${clue.value}`; els.dialog.showModal();
+  if (clue.index === state.dailyDouble) showWager(); else showQuestion();
+}
+function showWager() {
+  els.wagerView.hidden = false; els.value.textContent = "DAILY DOUBLE"; tone(220, .15, "square"); setTimeout(() => tone(330, .2, "square"), 150);
+  const max = Math.max(1000, Math.abs(state.score)); $("#max-wager").textContent = money(max); $("#wager-input").max = max; $("#wager-input").value = Math.min(1000, max); $("#wager-input").focus();
+}
+function showQuestion() {
+  els.wagerView.hidden = true; els.clueView.hidden = false; els.question.textContent = state.current.question; els.input.value = ""; els.input.focus();
+  const start = performance.now(), duration = 30000;
+  state.timer = setInterval(() => { const left = Math.max(0, 1 - (performance.now() - start) / duration); els.timer.style.transform = `scaleX(${left})`; if (left < .25) els.timer.style.background = "#ed315f"; if (left <= 0) resolveAnswer("", true); }, 100);
+}
+function resolveAnswer(guess, timedOut = false) {
+  if (els.clueView.hidden) return; clearInterval(state.timer); state.timer = null; els.clueView.hidden = true; els.resultView.hidden = false;
+  const won = !timedOut && isCorrect(guess, state.current.answers), points = state.wager ?? state.current.value; state.score += won ? points : -points; updateStatus();
+  els.stamp.classList.toggle("wrong", !won); els.stamp.textContent = won ? "CORRECT" : timedOut ? "TIME'S UP" : "NOT QUITE"; els.correct.textContent = `What is ${state.current.answers[0]}?`;
+  els.resultCopy.textContent = won ? `That's ${money(points)} for you. The audience pretends they knew it too.` : `The board takes ${money(points)}. A deeply judgmental buzzer has spoken.`; tone(won ? 680 : 130, won ? .18 : .35, won ? "sine" : "sawtooth");
+}
+function returnToBoard() { els.dialog.close(); resetDialog(); if (state.remaining === 0) finishGame(); else setTimeout(() => els.board.querySelector("button:not(:disabled)")?.focus(), 50); }
+function finishGame() {
+  showScreen(els.end); $("#final-score").textContent = money(state.score);
+  const outcome = state.score >= 12000 ? ["Actual champion behavior.", "Please remain humble in the imaginary green room."] : state.score >= 5000 ? ["Respectable television!", "You have earned bragging rights with a reasonable expiration date."] : state.score >= 0 ? ["You survived television.", "The important thing is that the studio lights were flattering."] : ["A bold financial journey.", "You owe us nothing. Our collections department is also imaginary."];
+  $("#final-headline").textContent = outcome[0]; $("#final-message").textContent = outcome[1];
 }
 
-
-function generateRandomNumber(max, min) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function dailyDoublePrompt(box,clue) {
-  let score = getScore();
-  
-}
-
-function removeRegex(string) {
-  return string.replace(/[^a-zA-Z0-9 ]/g, "");
-}
+$("#player-form").addEventListener("submit", startGame);
+$("#answer-form").addEventListener("submit", (event) => { event.preventDefault(); resolveAnswer(els.input.value); });
+$("#pass-button").addEventListener("click", () => resolveAnswer(""));
+$("#wager-form").addEventListener("submit", (event) => { event.preventDefault(); const input = $("#wager-input"); if (!input.checkValidity()) return input.reportValidity(); state.wager = Number(input.value); showQuestion(); });
+$("#return-board").addEventListener("click", returnToBoard);
+$("#new-game").addEventListener("click", () => { clearInterval(state.timer); if (els.dialog.open) els.dialog.close(); showScreen(els.start); });
+$("#play-again").addEventListener("click", startGame);
+$("#brand").addEventListener("click", () => { clearInterval(state.timer); if (els.dialog.open) els.dialog.close(); showScreen(els.start); });
+$("#sound-toggle").addEventListener("click", (event) => { state.sound = !state.sound; event.currentTarget.textContent = state.sound ? "♪" : "×"; event.currentTarget.title = state.sound ? "Sound on" : "Sound off"; event.currentTarget.setAttribute("aria-label", `Turn sound ${state.sound ? "off" : "on"}`); tone(520); });
+els.dialog.addEventListener("cancel", (event) => event.preventDefault()); updateStatus();

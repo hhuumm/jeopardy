@@ -1,25 +1,46 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-    <link href="css/style.css" rel="stylesheet" />
-    <script defer src="js/nap.js"></script>
-    <link href="//db.onlinewebfonts.com/c/e3e3a81b2544f4508a75573a04e0cafa?family=ITC+Korinna" rel="stylesheet" type="text/css"/>
-    <link href="//db.onlinewebfonts.com/c/6cc8a459c592c0f8b721e09ab3ff16d2?family=Swiss+911" rel="stylesheet" type="text/css"/>
-  </head>
-  <body>
-    <div class="container">
-      <div class="game">
-          <div class="stagedemo">
-            <div class="stage">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#071c63"><meta name="description" content="A fast, funny browser-based trivia board game.">
+  <title>Jeopardy! — Home Edition</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css"><script defer src="js/nap.js"></script>
+</head>
+<body>
+  <div class="ambient" aria-hidden="true"></div>
+  <main class="app">
+    <header class="topbar">
+      <button class="brand" id="brand" aria-label="Return to start screen"><span>THIS IS</span><b>JEOPARDY!</b></button>
+      <div class="game-status" aria-live="polite"><small>BANK</small><strong id="score">$0</strong><i></i><small>CLUES</small><strong id="remaining">30</strong></div>
+      <button class="icon-button" id="sound-toggle" aria-label="Turn sound off" title="Sound on">♪</button>
+    </header>
 
-            </div> 
-          </div>
-      </div>
-    <h3 id="score">$0</h3>
-</div>
-  </body>
-</html>
+    <section class="start-screen" id="start-screen">
+      <div class="spotlight"></div><p class="eyebrow">Your couch. Your rules. Questionable prestige.</p>
+      <h1>Answers first.<br><span>Regrets later.</span></h1>
+      <p class="intro">A real archive board, thirty clues, and one Daily Double hiding somewhere it absolutely should not be.</p>
+      <form class="player-form" id="player-form"><label for="player-name">Contestant name</label><div class="action-row">
+        <input id="player-name" maxlength="18" autocomplete="nickname" placeholder="Future champion">
+        <button class="primary-button" type="submit">Take the board <span aria-hidden="true">→</span></button>
+      </div></form>
+      <p class="tiny-copy">No pressure. Your imaginary studio audience is very supportive.</p>
+    </section>
+
+    <section class="game-screen" id="game-screen" hidden>
+      <div class="round-strip"><div><span class="live-dot"></span> JEOPARDY! ROUND</div><p id="player-greeting">Choose a clue</p><button class="text-button" id="new-game">New game</button></div>
+      <div class="board-wrap"><div class="board" id="board" aria-label="Jeopardy game board"></div></div>
+      <p class="board-tip">Pick any dollar amount. You can also tab through the board and press Enter.</p>
+    </section>
+
+    <section class="end-screen" id="end-screen" hidden><p class="eyebrow">THAT'S THE BOARD</p><h2 id="final-headline">You survived television.</h2><div class="final-score" id="final-score">$0</div><p id="final-message"></p><button class="primary-button" id="play-again">Play another board ↻</button></section>
+  </main>
+
+  <dialog class="clue-dialog" id="clue-dialog"><div class="dialog-shell">
+    <div class="clue-meta"><span id="clue-category">CATEGORY</span><strong id="clue-value">$200</strong></div><div class="timer-track"><div id="timer-bar"></div></div>
+    <div class="clue-content" id="clue-view"><p class="clue-label">THE CLUE</p><h2 id="clue-question"></h2><form id="answer-form"><label for="answer-input">Your response</label><div class="action-row"><input id="answer-input" autocomplete="off" placeholder="What is…" required><button class="primary-button" type="submit">Lock it in</button></div></form><button class="pass-button" id="pass-button">I got nothing</button></div>
+    <div class="wager-view" id="wager-view" hidden><p class="daily-kicker">DAILY DOUBLE</p><h2>Make it interesting.</h2><p>You may wager from $5 to <strong id="max-wager">$1,000</strong>.</p><form id="wager-form"><label for="wager-input">Your wager</label><div class="action-row"><input id="wager-input" type="number" min="5" step="5" required><button class="primary-button" type="submit">Bet boldly</button></div></form></div>
+    <div class="result-view" id="result-view" hidden><p class="result-stamp" id="result-stamp">CORRECT</p><h2 id="correct-answer"></h2><p id="result-copy"></p><button class="primary-button" id="return-board">Back to the board →</button></div>
+  </div></dialog>
+</body></html>
